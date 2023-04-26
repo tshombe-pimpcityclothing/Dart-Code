@@ -32,6 +32,14 @@ export class SuperRequest {
 	public static type = new RequestType<TextDocumentPositionParams, Location | null, void>("dart/textDocument/super");
 }
 
+export class FlutterWidgetDescription {
+	public static type = new RequestType<TextDocumentPositionParams, FlutterWidgetDescription | null, void>("flutter/widgetDescription");
+}
+
+export class FlutterSetWidgetPropertyValue {
+	public static type = new RequestType<{ id: number, value: FlutterWidgetPropertyValue | undefined }, WorkspaceEdit | null, void>("flutter/setWidgetPropertyValue");
+}
+
 export class DiagnosticServerRequest {
 	public static type = new RequestType0<{ port: number }, void>("dart/diagnosticServer");
 }
@@ -96,4 +104,50 @@ export interface Element {
 	readonly parameters?: string;
 	readonly typeParameters?: string;
 	readonly returnType?: string;
+}
+
+export interface FlutterWidgetDescription {
+	properties: FlutterWidgetProperty[];
+}
+
+export interface FlutterWidgetProperty {
+	isRequired: boolean;
+	isSafeToUpdate: boolean;
+	editor: FlutterWidgetPropertyEditor | undefined;
+	value: FlutterWidgetPropertyValue | undefined;
+	id: number;
+	children: FlutterWidgetProperty[] | undefined;
+	name: string;
+	documentation: string | undefined;
+	expression: string | undefined;
+}
+
+export interface FlutterWidgetPropertyEditor {
+	kind: FlutterWidgetPropertyEditorKind;
+	enumItems: FlutterWidgetPropertyValueEnumItem[] | undefined;
+}
+
+export enum FlutterWidgetPropertyEditorKind {
+	BOOL,
+	DOUBLE,
+	ENUM,
+	ENUM_LIKE,
+	INT,
+	STRING,
+}
+
+export interface FlutterWidgetPropertyValueEnumItem {
+	libraryUri: string;
+	className: string;
+	name: string;
+	documentation: string | undefined;
+}
+
+export interface FlutterWidgetPropertyValue {
+	boolValue: boolean | undefined;
+	doubleValue: number | undefined;
+	intValue: number | undefined;
+	stringValue: string | undefined;
+	enumValue: FlutterWidgetPropertyValueEnumItem | undefined;
+	expression: string | undefined;
 }

@@ -3,7 +3,7 @@ import * as stream from "stream";
 import * as vs from "vscode";
 import * as ls from "vscode-languageclient";
 import { LanguageClient, StreamInfo, StreamMessageReader, StreamMessageWriter } from "vscode-languageclient/node";
-import { AnalyzerStatusNotification, CompleteStatementRequest, DiagnosticServerRequest, OpenUriNotification, ReanalyzeRequest, SuperRequest } from "../../shared/analysis/lsp/custom_protocol";
+import { AnalyzerStatusNotification, CompleteStatementRequest, DiagnosticServerRequest, FlutterSetWidgetPropertyValue, FlutterWidgetDescription, FlutterWidgetPropertyValue, OpenUriNotification, ReanalyzeRequest, SuperRequest } from "../../shared/analysis/lsp/custom_protocol";
 import { Analyzer } from "../../shared/analyzer";
 import { DartCapabilities } from "../../shared/capabilities/dart";
 import { dartVMPath, validClassNameRegex, validMethodNameRegex } from "../../shared/constants";
@@ -373,6 +373,14 @@ export class LspAnalyzer extends Analyzer {
 		return this.client.sendRequest(DiagnosticServerRequest.type);
 	}
 
+	public async getFlutterWidgetDescription(params: ls.TextDocumentPositionParams): Promise<FlutterWidgetDescription | null> {
+		return this.client.sendRequest(FlutterWidgetDescription.type, params);
+	}
+
+	public async setFlutterWidgetPropertyValue(params: { id: number, value: FlutterWidgetPropertyValue | undefined }): Promise<ls.WorkspaceEdit | null> {
+		return this.client.sendRequest(FlutterSetWidgetPropertyValue.type, params);
+	}
+
 	public async forceReanalyze(): Promise<void> {
 		try {
 			return await this.client.sendRequest(ReanalyzeRequest.type);
@@ -382,10 +390,7 @@ export class LspAnalyzer extends Analyzer {
 	}
 
 	public async getSuper(params: ls.TextDocumentPositionParams): Promise<ls.Location | null> {
-		return this.client.sendRequest(
-			SuperRequest.type,
-			params,
-		);
+		return this.client.sendRequest(SuperRequest.type, params);
 	}
 
 	public async completeStatement(params: ls.TextDocumentPositionParams): Promise<ls.WorkspaceEdit | null> {

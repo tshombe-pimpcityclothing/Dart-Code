@@ -68,6 +68,7 @@ import { FlutterDaemon } from "./flutter/flutter_daemon";
 import { DasFlutterOutlineProvider, FlutterOutlineProvider, FlutterWidgetItem, LspFlutterOutlineProvider } from "./flutter/flutter_outline_view";
 import { FlutterTaskProvider } from "./flutter/flutter_task_provider";
 import { GenerateLocalizationsOnSaveHandler } from "./flutter/generate_localizations_on_save_handler";
+import { FlutterSidebar } from "./flutter/sidebar";
 import { LspAnalyzerStatusReporter } from "./lsp/analyzer_status_reporter";
 import { LspClosingLabelsDecorations } from "./lsp/closing_labels_decorations";
 import { LspGoToSuperCommand } from "./lsp/go_to_super";
@@ -690,7 +691,11 @@ export async function activate(context: vs.ExtensionContext, isRestart: boolean 
 		}));
 		context.subscriptions.push(tree);
 		context.subscriptions.push(flutterOutlineTreeProvider);
-		// TODO: This doesn't work for LSP!!!
+
+		if (lspAnalyzer)
+			context.subscriptions.push(new FlutterSidebar(lspAnalyzer));
+
+		// TODO: This doesn't work for LSP!
 		const flutterOutlineCommands = new FlutterOutlineCommands(tree, context);
 	}
 
