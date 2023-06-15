@@ -118,6 +118,7 @@ export class FlutterDeviceManager implements vs.Disposable {
 
 	private setCurrentDevice(device: f.Device | undefined) {
 		this.currentDevice = device;
+		this.onCurrentDeviceChangedEmitter.fire(device);
 		this.updateStatusBar();
 	}
 

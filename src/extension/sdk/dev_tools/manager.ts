@@ -90,11 +90,12 @@ export class DevToolsManager implements vs.Disposable {
 	}
 
 	public async urlFor(page: string): Promise<string | undefined> {
+		// TODO(dantup): Theme, etc.
 		const base = await this.devtoolsUrl;
 		if (!base) return base;
 
 		const separator = base.endsWith("/") ? "" : "/";
-		return `${base}${separator}${page}`;
+		return `${base}${separator}${page}?embed=true`;
 	}
 
 	public async start(silent = false): Promise<string | undefined> {
