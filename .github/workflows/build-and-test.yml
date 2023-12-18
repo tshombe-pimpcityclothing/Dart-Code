@@ -272,7 +272,7 @@ jobs:
           export GIT_BRANCH="${GITHUB_REF/refs\/heads\//}"
           export GIT_SHA="${GITHUB_SHA}"
           find coverage/**/**/lcov.info | cut -d '/' -f2- | xargs -I % -n1 ./cc-test-reporter format-coverage -t lcov -o coverage/%.json coverage/% # -p /home/runner/work/Dart-Code/Dart-Code
-          ./cc-test-reporter sum-coverage -o coverage/codeclimate.json coverage/**/**/lcov.info.json
+          ./cc-test-reporter sum-coverage -o coverage/codeclimate.json coverage/**/**/**/lcov.info.json
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
