@@ -218,34 +218,34 @@ jobs:
         run: ps -x
 
       - name: Store logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-logs-${{ matrix.os }}
+          name: "test-logs-${{ matrix.bot }}-${{ matrix.build-version }}-{{ matrix.os }}"
           path: .dart_code_test_logs
           if-no-files-found: ignore
 
       - name: Store test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.os }}
+          name: "test-results-${{ matrix.bot }}-${{ matrix.build-version }}-{{ matrix.os }}"
           path: .test_results
           if-no-files-found: ignore
 
       - name: Store coverage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success() && matrix.build-version == 'stable'
         with:
-          name: coverage-${{ matrix.os }}
+          name: "coverage-${{ matrix.bot }}-${{ matrix.build-version }}-{{ matrix.os }}"
           path: coverage
           if-no-files-found: ignore
 
       - name: Store crash dumps
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: crash-dumps-${{ matrix.os }}
+          name: "crash-dumps-${{ matrix.bot }}-${{ matrix.build-version }}-{{ matrix.os }}"
           path: .crash_dumps
           if-no-files-found: ignore
 
@@ -263,7 +263,6 @@ jobs:
       - name: Fetch Linux coverage
         uses: actions/download-artifact@v4
         with:
-          name: coverage-ubuntu-latest
           path: coverage/linux
 
       - name: Upload to CodeClimate
