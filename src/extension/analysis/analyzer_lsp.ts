@@ -512,7 +512,7 @@ export class LspAnalyzer extends Analyzer {
 				if (ls.TextDocumentEdit.is(change)) {
 					const uri = vs.Uri.parse(change.textDocument.uri);
 					for (const edit of change.edits) {
-						if ((edit as any).insertTextFormat === ls.InsertTextFormat.Snippet) {
+						if ((edit as any).insertTextFormat === ls.InsertTextFormat.Snippet && "newText" in edit) {
 							snippetTypes.add(`${fsPath(uri)}:${edit.newText}:${edit.range.start.line}:${edit.range.start.character}`);
 						}
 					}

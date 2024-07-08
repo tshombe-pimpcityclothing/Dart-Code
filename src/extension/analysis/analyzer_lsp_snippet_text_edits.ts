@@ -18,7 +18,7 @@ export class SnippetTextEditFeature implements IAmDisposable {
 		const snippetTextEditsEnabled = config.lspSnippetTextEdits;
 
 		return {
-			dispose() { },
+			clear() { },
 			fillClientCapabilities(capabilities: ClientCapabilities) {
 				capabilities.experimental = capabilities.experimental ?? {};
 				if (supportsSnippetTextEdits && snippetTextEditsEnabled) {
