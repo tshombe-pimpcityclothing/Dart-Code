@@ -25,6 +25,12 @@ import { DartDebugSessionInformation, ProgressMessage } from "../utils/vscode/de
 export const debugSessions: DartDebugSessionInformation[] = [];
 const debugSessionsChangedEmitter = new vs.EventEmitter<void>();
 export const debugSessionsChanged = debugSessionsChangedEmitter.event;
+const debugSessionStartedEmitter = new vs.EventEmitter<DartDebugSessionInformation>();
+export const debugSessionStarted = debugSessionStartedEmitter.event;
+const debugSessionStoppedEmitter = new vs.EventEmitter<DartDebugSessionInformation>();
+export const debugSessionStopped = debugSessionStoppedEmitter.event;
+const debugSessionChangedEmitter = new vs.EventEmitter<DartDebugSessionInformation>();
+export const debugSessionChanged = debugSessionChangedEmitter.event;
 
 const CURRENT_FILE_RUNNABLE = "dart-code:currentFileIsRunnable";
 
@@ -519,6 +525,7 @@ export class DebugCommands implements IAmDisposable {
 			this.vmServices.resetToDefaults();
 		debugSessions.push(session);
 		this.updateDebugSessionsStatus();
+		debugSessionStartedEmitter.fire(session);
 		debugSessionsChangedEmitter.fire();
 
 		if (s.configuration.debuggerType === DebuggerType.Flutter || s.configuration.debuggerType === DebuggerType.Web) {
@@ -577,6 +584,7 @@ export class DebugCommands implements IAmDisposable {
 		session.hasEnded = true;
 		debugSessions.splice(sessionIndex, 1);
 		this.updateDebugSessionsStatus();
+		debugSessionStoppedEmitter.fire(session);
 		debugSessionsChangedEmitter.fire();
 
 		// Close any in-progress progress notifications.
@@ -748,6 +756,7 @@ export class DebugCommands implements IAmDisposable {
 			session.vmServiceUri = body.vmServiceUri;
 			session.clientVmServiceUri = body.clientVmServiceUri;
 			this.onDebugSessionVmServiceAvailableEmitter.fire(session);
+			debugSessionChangedEmitter.fire(session);
 			debugSessionsChangedEmitter.fire();
 
 			// Open or prompt for DevTools when appropriate.
@@ -847,6 +856,7 @@ export class DebugCommands implements IAmDisposable {
 			this.suppressFlutterWidgetErrors = false;
 		} else if (event === "flutter.appStarted") {
 			session.hasStarted = true;
+			debugSessionChangedEmitter.fire(session);
 			debugSessionsChangedEmitter.fire();
 			// In noDebug mode, we won't see services registered but we can tell if Hot Reload
 			// is available.
@@ -856,6 +866,7 @@ export class DebugCommands implements IAmDisposable {
 			session.flutterMode = body?.mode;
 			session.flutterDeviceId = body?.deviceId;
 			session.supportsHotReload = body?.supportsRestart;
+			debugSessionChangedEmitter.fire(session);
 			debugSessionsChangedEmitter.fire();
 		}
 	}
